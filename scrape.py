@@ -32,9 +32,12 @@ import sys, bs4, json
 
 
 def map_dd(dd):
+    kind = None if dd.i is None else dd.i.string
+    desc = "".join(map(str, dd.contents if kind is None else dd.contents[1:]))
+
     return {
-        "kind": None if dd.i is None else dd.i.string,
-        "desc": list(dd.stripped_strings)[-1],
+        "kind": kind,
+        "desc": desc,
     }
 
 
