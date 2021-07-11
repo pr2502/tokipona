@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Toki Pona</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <style type="text/css">
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        main form {
+            margin: 2em 0;
+        }
+        main #text {
+            font-size: 1.5em;
+        }
+        dl {
+            display: none;
+        }
+        dl.visible {
+            display: block;
+        }
+        dt {
+            color: #d7af5f;
+        }
+        dd em {
+            font-style: normal;
+            color: #d75f5f;
+        }
+    </style>
+    <script>
+        /* hides the currently visible word definition and shows the requested one */
+        function show(name) {
+            const prev = document.querySelector('dl.visible');
+            if (prev !== null) {
+                prev.className = '';
+            }
+            const next = document.querySelector('dl[name='+name+']');
+            if (next !== null) {
+                next.className = 'visible';
+            }
+        }
+    </script>
+</head>
+<body>
+    <main>
+        <h1>Toki Pona</h1>
+
+        <span class="comment">
+            the definitions were scraped from
+            <a href="http://tokipona.net/tp/ClassicWordList.aspx">tokipona.net/tp/ClassicWordList.aspx</a>
+        </span>
+        </br>
+        <span class="comment">
+            it's still kinda broken :/
+        </span>
+
+        <form method="get">
+            <input type="text" name="q" />
+            <input type="submit" />
+        </form>
+
+        <div id="text">
+            {% for word in ["ilo", "li", "toki", "e", "ni"] %}
+                <a href="javascript: show('{{ word }}');">{{ word }}</a>
+            {% endfor %}
+        </div>
+
+        {% for word, def in words.items() %}
+            <dl name="{{ word }}">
+                <dt>{{ def.data.dt if def.data.dt else word }}</dt>
+                {% for dd in def.data.dd %}
+                    <dd>
+                        {% if dd.kind %}
+                            <em title="{{ kinds[dd.kind] }}">{{ dd.kind }}</em>
+                        {% endif %}
+                        {{ dd.desc }}
+                    </dd>
+                {% endfor %}
+            </dl>
+        {% endfor %}
+    </main>
+
+    <script>
+        /* replace text with the query parameter if present */
+        const params = new URLSearchParams(window.location.search);
+        const query = params.get('q');
+
+        if (query !== null) {
+            let text = document.getElementById('text');
+            text.replaceChildren([]); /* clear contents */
+            const words = query.split(' ');
+            words.forEach((word) => {
+                let elem = document.createElement('a');
+                elem.setAttribute('href', "javascript: show('" + word + "');");
+                elem.append(word);
+                text.appendChild(elem);
+                text.append(" ");
+            });
+        }
+    </script>
+</body>
+</html>
