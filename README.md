@@ -1,6 +1,6 @@
 # tokipona interactive dictionary
 
-<https://p2502.net/tokipona.html>
+<https://p2502.net/tokipona>
 
 
 Generate a local copy with
